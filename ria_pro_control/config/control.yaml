@@ -1,0 +1,133 @@
+ria_pro_base_controller:
+  type        : "gaitech_diff_controller/GaitechDiffController"
+  left_wheel  : ['left_wheel_joint']
+  right_wheel : ['right_wheel_joint']
+  publish_rate: 50.0  
+  pose_covariance_diagonal : [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
+  twist_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
+
+  # Wheel separation and diameter
+  wheel_separation: 0.369
+  wheel_radius    : 0.07
+
+  # Wheel separation and radius multipliers
+  wheel_separation_multiplier: 1.0 
+  wheel_radius_multiplier    : 1.0
+
+  # Velocity commands timeout [s]
+  cmd_vel_timeout: 0.25
+
+  # Base frame_id
+  base_frame_id: base_link
+
+  # Odom frame id
+  odom_frame_id: odom
+
+  enable_odom_tf: true
+
+  linear:
+    x:
+      has_velocity_limits    : true
+      max_velocity           : 1.5  # m/s
+      min_velocity           : -1.5 # m/s
+      has_acceleration_limits: true
+      max_acceleration       : 2.0  # m/s^2
+      min_acceleration       : -2.0 # m/s^2
+  angular:
+    z:
+      has_velocity_limits    : true
+      max_velocity           : 3.0  # rad/s
+      min_velocity           : -3.0 # rad/s
+      has_acceleration_limits: true
+      max_acceleration       : 3.0  # rad/s^2
+      min_acceleration       : -3.0 # rad/s^2
+
+
+ria_pro_joint_state_controller:
+  type: joint_state_controller/JointStateController 
+  publish_rate: 50.0
+
+
+twist_mux:
+  topics:
+  - name    : Joystick
+    topic   : teleop/cmd_vel
+    timeout : 0.5
+    priority: 100
+
+  - name    : Navigation
+    topic   : move_base/cmd_vel
+    timeout : 0.5
+    priority: 50
+
+  - name    : Docking
+    topic   : dock/cmd_vel
+    timeout : 0.5
+    priority: 20
+
+  - name    : External
+    topic   : cmd_vel
+    timeout : 0.5
+    priority: 10
+
+  locks:
+  - name    : Hardware Emergency Stop
+    topic   : hardware_estop
+    timeout : 0.0    
+    priority: 255
+
+  - name    : Software Runstop
+    topic   : software_runstop
+    timeout : 0.0    
+    priority: 150
+
+
+graft:
+  planar_output: True
+
+  output_frame: odom
+  parent_frame_id: odom
+  child_frame_id: base_link
+  publish_tf: true
+
+  update_rate: 50.0
+  update_topic: /ria_pro_base_controller/odom
+  queue_size: 1
+
+  alpha: 0.001
+  kappa: 0.0
+  beta: 2.0
+
+  process_noise: [1e6, 0, 0,
+                  0, 1e6, 0,
+                  0, 0, 1e6]
+
+  topics: {
+    odom: {
+      topic: /ria_pro_base_controller/odom,
+      type: nav_msgs/Odometry,
+      absolute_pose: False,
+      use_velocities: True,
+      timeout: 1.0,
+      no_delay: True,
+      override_twist_covariance: [1e-3, 0, 0, 0, 0, 0,
+                                  0, 1e-3, 0, 0, 0, 0,
+                                  0, 0, 1e-6, 0, 0, 0,
+                                  0, 0, 0, 1e-6, 0, 0,
+                                  0, 0, 0, 0, 1e-6, 0,
+                                  0, 0, 0, 0, 0, 1e-3],
+    },
+
+    imu: {
+      topic: /imu/data,
+      type: sensor_msgs/Imu,
+      absolute_orientation: False,
+      use_velocities: True,
+      use_accelerations: False,
+      timeout: 1.0,
+      no_delay: True,
+      override_angular_velocity_covariance: [0, 0, 0,
+                                            0, 0, 0,
+                                            0, 0, 0.000004],
+    },
+  }

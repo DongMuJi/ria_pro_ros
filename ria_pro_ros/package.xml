@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ria_pro_ros</name>
+  <version>0.1.0</version>
+  <description> 
+    The meta package for RIA PRO 
+  </description>
+  <maintainer email="shlee@gaitech.co.kr">Brighten Lee</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>ria_pro_base</exec_depend>
+  <exec_depend>ria_pro_control</exec_depend>
+  <exec_depend>ria_pro_description</exec_depend>
+  <exec_depend>ria_pro_msgs</exec_depend>
+  <exec_depend>ria_pro_navigation</exec_depend>
+  <exec_depend>ria_pro_teleop</exec_depend>
+  <export>
+    <metapackage/>
+  </export>
+</package>

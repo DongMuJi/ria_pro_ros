@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+  <!--Bringup Riapro Base-->
+  <include file="$(find ria_pro_base)/launch/base.launch"/>
+
+  <!--Bringup Ouster-->
+  <include file="$(find ouster_ros)/ouster_with_riapro.launch"/>
+
+</launch>

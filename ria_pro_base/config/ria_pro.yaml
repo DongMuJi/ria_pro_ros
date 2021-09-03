@@ -1,0 +1,34 @@
+ria_pro_base_node:
+  port: "/dev/ttyUSB0"
+  baud: 115200
+  robot: "ria_pro"
+  joint: ['left_wheel_joint', 'right_wheel_joint']
+  control_frequency: 50
+
+diagnostic_aggregator:
+  pub_rate: 1.0
+  analyzers:
+    former:
+      type: diagnostic_aggregator/AnalyzerGroup
+      path: RIA PRO
+      analyzers:
+        base:
+          type: diagnostic_aggregator/GenericAnalyzer
+          path: Base
+          find_and_remove_prefix: 'ria_pro_base_node'
+          timeout: 5.0
+          contains: [
+            'ria_pro_base_node: Controller',
+            'ria_pro_base_node: Battery',
+            'ria_pro_base_node: Temperature']
+    teleop:
+      type: diagnostic_aggregator/AnalyzerGroup
+      path: Teleop
+      analyzers:
+        joystick:
+          type: diagnostic_aggregator/GenericAnalyzer
+          path: Bluetooth Joystick
+          find_and_remove_prefix: 'joy_node'
+          timeout: 5.0
+          expected: [
+            'joy_node: Joystick Driver Status']

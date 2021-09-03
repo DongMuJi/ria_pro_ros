@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="port" default="/dev/ria_pro"/>
+
+  <rosparam file="$(find ria_pro_base)/config/ria_pro.yaml" command="load"/>
+
+  <!-- Communication with the robot's controller -->
+  <node pkg="ria_pro_base" type="ria_pro_base_node" name="ria_pro_base_node" output="screen">
+    <param name="port" value="$(arg port)"/>
+  </node>
+
+  <!-- Diagnostic aggregator to use rqt_robot_monitor -->
+  <node pkg="diagnostic_aggregator" type="aggregator_node" name="diagnostic_aggregator"/>
+
+  <!-- Load the robot's URDF -->
+  <include file="$(find ria_pro_description)/launch/description.launch"/>
+
+  <!-- Robot controllers and localization -->
+  <include file="$(find ria_pro_control)/launch/control.launch"/>
+
+  <!-- Teleoperation using joystick -->
+  <include file="$(find ria_pro_teleop)/launch/teleop.launch"/>
+
+</launch>

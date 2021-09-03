@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+
+  <rosparam file="$(find ria_pro_control)/config/control.yaml" command="load"/>
+
+  <!-- Load the base controllers -->
+  <node pkg="controller_manager" type="spawner" name="controller_spawner" output="screen" 
+    args="ria_pro_base_controller ria_pro_joint_state_controller"/>
+
+  <!-- Twist Mux -->
+  <node pkg="twist_mux" type="twist_mux" name="twist_mux">
+    <remap from="/cmd_vel_out" to="/ria_pro_base_controller/cmd_vel"/>
+  </node>
+
+  <!-- Odometry UKF -->
+  <!--node pkg="graft" type="graft_ukf_velocity" name="graft"/-->
+
+</launch>

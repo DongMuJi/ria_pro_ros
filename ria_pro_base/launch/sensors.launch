@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- SICK TiM571 -->
+  <include file="$(find ria_pro_base)/launch/include/sick_tim.launch"/>
+
+  <!-- Intel RealSense D435 -->
+  <include file="$(find ria_pro_base)/launch/include/d435.launch"/>
+
+</launch>
